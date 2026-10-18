@@ -6,10 +6,14 @@ import { APP_NAME, APP_TAGLINE } from './config.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 
-// Route imports (Stage 1 Core: Auth, Skills, Profile)
+// Route imports (Stage 1 + Stage 2 Marketplace & AI)
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
+import opportunityRoutes from './routes/opportunityRoutes.js';
+import applicationRoutes from './routes/applicationRoutes.js';
+import matchRoutes from './routes/matchRoutes.js';
+import candidateRoutes from './routes/candidateRoutes.js';
 
 dotenv.config();
 
@@ -39,15 +43,19 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     app: APP_NAME,
     tagline: APP_TAGLINE,
-    phase: 'Stage 1: Core Foundation & Auth Platform',
+    phase: 'Stage 2: Opportunity Marketplace, Applications & AI Parser',
     timestamp: new Date().toISOString()
   });
 });
 
-// Mount Stage 1 API routes
+// Mount Stage 1 & 2 API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/skills', skillRoutes);
+app.use('/api/opportunities', opportunityRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api', matchRoutes); // /api/matches & /api/skill-gap/:id
+app.use('/api/candidates', candidateRoutes);
 
 // Central error handler
 app.use(errorHandler);
@@ -64,7 +72,7 @@ async function startServer() {
       await runSeed();
     }
     app.listen(PORT, () => {
-      console.log(`🚀 SkillSpark Stage 1 Server running on port ${PORT}`);
+      console.log(`🚀 SkillSpark Stage 2 Server running on port ${PORT}`);
     });
   } catch (err) {
     console.error('Failed to start server:', err);
